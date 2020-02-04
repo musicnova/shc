@@ -64,8 +64,6 @@ class ConnectionMocker extends Connection {
 
   def getAdmin: Admin = null
 
-  def getTableBuilder(tableName: TableName, executorService: ExecutorService): TableBuilder = null
-
   def close(): Unit = {
     if (isClosed)
       throw new IllegalStateException()
