@@ -1,0 +1,40 @@
+operationtype=0
+echo "{{{ BEGIN ($operationtype)"
+spark2-shell \
+--files ./wf_select.properties \
+--name "select spark_select_$operationtype.sc" \
+--master yarn \
+--deploy-mode client \
+--num-executors "1" \
+--executor-cores "2" \
+--conf spark.yarn.appMasterEnv.migrationParams="config=./wf_select.properties,step=$operationtype" \
+--conf spark.yarn.maxAppAttempts=1 \
+--conf spark.executor.memory=4G \
+--conf spark.driver.memory=4G \
+--conf spark.driver.userClassPathFirst=false \
+--conf spark.executor.userClassPathFirst=false \
+--conf spark.yarn.submit.waitAppCompletion=true \
+--conf spark.dynamicAllocation.enabled=false \
+--jars util-1.1.3.jar \
+< ./spark_select_$operationtype.sc
+
+echo spark2-submit \
+--files ./wf_select.properties \
+--name "status spark_select_$operationtype.sc" \
+--master yarn \
+--deploy-mode client \
+--num-executors "1" \
+--executor-cores "2" \
+--conf spark.yarn.appMasterEnv.migrationParams="config=./wf_select.properties,step=$operationtype" \
+--conf spark.yarn.maxAppAttempts=1 \
+--conf spark.executor.memory=4G \
+--conf spark.driver.memory=4G \
+--conf spark.driver.userClassPathFirst=false \
+--conf spark.executor.userClassPathFirst=false \
+--conf spark.yarn.submit.waitAppCompletion=true \
+--conf spark.dynamicAllocation.enabled=false \
+--jars util-1.1.3.jar \
+util-1.1.3.jar CheckStatus ./spark_select_$operationtype.sc || exit 1
+echo "}}} END ($operationtype)"
+
+
